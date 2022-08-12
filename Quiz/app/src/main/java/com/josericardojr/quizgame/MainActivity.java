@@ -1,6 +1,8 @@
 package com.josericardojr.quizgame;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
+
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -13,22 +15,16 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     ActivityMainBinding binding;
-    Question[] questions = new Question[]{
-            new Question(R.string.question_australia, true),
-            new Question(R.string.question_oceans, true),
-            new Question(R.string.question_mideast, false),
-            new Question(R.string.question_africa, false),
-            new Question(R.string.question_americas, true),
-            new Question(R.string.question_asia, true),
-    };
-
-    int current_index = 0;
+    private QuizViewModel quizViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        // Get the ViewModel
+        quizViewModel = new ViewModelProvider(this).get(QuizViewModel.class);
 
         updateQuestion();
 
@@ -49,19 +45,19 @@ public class MainActivity extends AppCompatActivity {
         binding.nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                current_index = (current_index + 1) % questions.length;
+                quizViewModel.moveToNext();
                 updateQuestion();
             }
         });
     }
 
     private void updateQuestion(){
-        int questionTextResId = questions[current_index].resId;
+        int questionTextResId = quizViewModel.currentQuestionText();
         binding.questionTextView.setText(questionTextResId);
     }
 
     private void checkAnswer(boolean userAnswer){
-        boolean correct = questions[current_index].answer;
+        boolean correct = quizViewModel.currentQuestionAnswer();
 
         int messageResId = userAnswer == correct ? R.string.correct_toast
                 : R.string.incorrect_toast;
