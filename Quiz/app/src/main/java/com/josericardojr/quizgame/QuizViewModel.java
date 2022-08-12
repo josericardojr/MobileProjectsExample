@@ -14,6 +14,8 @@ public class QuizViewModel extends ViewModel {
     };
 
     int current_index = 0;
+    private boolean isCheater = false;
+
 
 
     public boolean currentQuestionAnswer(){
@@ -28,4 +30,11 @@ public class QuizViewModel extends ViewModel {
         current_index = (current_index + 1) % questions.length;
     }
 
+    public boolean isCheater() {
+        return isCheater;
+    }
+
+    public void setCheater(boolean cheater) {
+        isCheater = cheater;
+    }
 }
